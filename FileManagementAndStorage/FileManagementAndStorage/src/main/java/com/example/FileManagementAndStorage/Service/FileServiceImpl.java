@@ -1,4 +1,7 @@
 package com.example.FileManagementAndStorage.Service;
 
-public class FileServiceImpl {
+import org.springframework.stereotype.Service;
+
+@Service
+public class FileServiceImpl implements FileService{
 }
