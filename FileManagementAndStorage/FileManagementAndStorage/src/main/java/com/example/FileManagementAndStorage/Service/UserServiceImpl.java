@@ -21,17 +21,36 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDTO register(SignUpRequest signup) {
-        User user = userRepository.findByUsername(signup.getUsername());
-        if(user != null){
-            throw new RuntimeException("User with this Username is already exists !!!");
+        if (userRepository.findByUsername(signup.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already taken!");
         }
-        User user1 = modelMapper.map(signup, User.class);
-        userRepository.save(user1);
-        return modelMapper.map(user1, UserDTO.class);
+        if (userRepository.findByEmail(signup.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already registered!");
+        }
+        User user = modelMapper.map(signup, User.class);
+        userRepository.save(user);
+        return modelMapper.map(user, UserDTO.class);
     }
+
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-        return null;
+        User user = (User) userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + loginRequest.getEmail()));
+
+//        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+//            throw new RuntimeException("Invalid password!");
+//        }
+        if(!user.getPassword().equals(loginRequest.getPassword())){
+            throw new RuntimeException("Invalid password!");
+        }
+        return LoginResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .jwtToken("dummy-jwt-token")
+                .build();
     }
+
 }
