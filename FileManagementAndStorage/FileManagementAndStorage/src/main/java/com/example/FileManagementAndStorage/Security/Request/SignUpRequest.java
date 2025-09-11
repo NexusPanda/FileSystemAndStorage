@@ -19,7 +19,7 @@ public class SignUpRequest {
     @Column(nullable = false, unique = true, length = 20)
     private String email;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, length = 50)
     private String password;
 
     @Enumerated(EnumType.STRING)

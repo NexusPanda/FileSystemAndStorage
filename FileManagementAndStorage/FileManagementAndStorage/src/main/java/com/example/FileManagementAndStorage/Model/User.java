@@ -1,6 +1,7 @@
 package com.example.FileManagementAndStorage.Model;
 
 import com.example.FileManagementAndStorage.Config.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "Users")
 public class User {
 
     @Id
@@ -27,7 +29,7 @@ public class User {
     @Column(nullable = false, unique = true, length = 20)
     private String email;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, length = 50)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -36,9 +38,11 @@ public class User {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Folder> folders;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<FileModel> files;
 
 }
