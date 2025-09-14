@@ -21,7 +21,8 @@ public class WebSecurityConfig {
         http.headers(header ->
                 header.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests((requests) ->
-                requests.requestMatchers("/h2-console/**").permitAll()
+                requests.requestMatchers("/h2-console/**",
+                                "/api/auth/**").permitAll()
                 .anyRequest().authenticated());
         http.csrf(csrf -> csrf.disable());
         return http.build();

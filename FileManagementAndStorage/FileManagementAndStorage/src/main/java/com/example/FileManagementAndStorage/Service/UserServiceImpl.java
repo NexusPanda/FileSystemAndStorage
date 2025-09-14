@@ -8,6 +8,7 @@ import com.example.FileManagementAndStorage.Security.Request.SignUpRequest;
 import com.example.FileManagementAndStorage.Security.Response.LoginResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +20,9 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public UserDTO register(SignUpRequest signup) {
         if (userRepository.findByUsername(signup.getUsername()).isPresent()) {
@@ -28,6 +32,8 @@ public class UserServiceImpl implements UserService{
             throw new RuntimeException("Email already registered!");
         }
         User user = modelMapper.map(signup, User.class);
+        String pass = passwordEncoder.encode(user.getPassword());
+        user.setPassword(pass);
         userRepository.save(user);
         return modelMapper.map(user, UserDTO.class);
     }
@@ -38,10 +44,7 @@ public class UserServiceImpl implements UserService{
         User user = (User) userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + loginRequest.getEmail()));
 
-//        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-//            throw new RuntimeException("Invalid password!");
-//        }
-        if(!user.getPassword().equals(loginRequest.getPassword())){
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password!");
         }
         return LoginResponse.builder()
