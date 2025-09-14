@@ -35,7 +35,7 @@ public class Folder {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+    private UserEntity owner;
 
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FileModel> files;

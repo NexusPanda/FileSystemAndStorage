@@ -28,7 +28,7 @@ public class FileShare {
     // User with whom it is shared
     @ManyToOne
     @JoinColumn(name = "shared_with", nullable = false)
-    private User sharedWith;
+    private UserEntity sharedWith;
 
     @Enumerated(EnumType.STRING)
     private Permission permission = Permission.READ;

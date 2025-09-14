@@ -1,5 +1,6 @@
 package com.example.FileManagementAndStorage.Security.Jwt;
 
+import com.example.FileManagementAndStorage.Security.Service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,37 +25,40 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
 
-//    @Autowired
-//    private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // Bypass JWT filter for H2 Console
         String path = request.getRequestURI();
+
+        // Bypass JWT filter for H2 Console
         if (path.startsWith("/h2-console")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        logger.debug("AuthTokenFilter called for URI: {}", path);
         try {
             String jwt = parseJwt(request);
-            System.out.println(">>> Authorization Header: " + request.getHeader("Authorization"));
-            System.out.println(">>> URI: " + path);
 
             if (jwt != null && jwtUtils.validateToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
+
+                // load user details from DB
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+                //set in security context
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
                 logger.debug("Roles from JWT: {}", userDetails.getAuthorities());
             }
 
@@ -62,14 +66,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             logger.error("Cannot set user authentication: {}", e);
         }
 
-        // Proceed with the rest of the filter chain
         filterChain.doFilter(request, response);
     }
 
-
     private String parseJwt(HttpServletRequest request) {
-        String jwt = jwtUtils.getJwtFromHeader(request);
-        logger.debug("AuthTokenFilter.java {}", jwt);
-        return jwt;
+        return jwtUtils.getJwtFromHeader(request); // Your utility function
     }
 }

@@ -38,7 +38,7 @@ public class FileModel {
     // Owner of file
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+    private UserEntity owner;
 
     // Folder where file is stored
     @ManyToOne
