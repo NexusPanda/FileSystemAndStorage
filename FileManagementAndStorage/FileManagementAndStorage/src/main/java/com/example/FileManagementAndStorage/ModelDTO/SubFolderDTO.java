@@ -5,21 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FolderDTO {
-
+public class SubFolderDTO {
     private Long id;
     private String folderName;
-    private LocalDateTime createdAt;
-
-    private Long parentId;
-
-    private List<FileDTO> files;
-    private List<SubFolderDTO> subFolders;
 }
