@@ -15,9 +15,6 @@ public class FolderServiceImpl implements FolderService {
     private FolderRepository folderRepository;
 
     @Autowired
-    private FileRepository fileRepository;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     @Override

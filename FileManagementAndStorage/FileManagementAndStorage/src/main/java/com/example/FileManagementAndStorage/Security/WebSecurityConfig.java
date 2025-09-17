@@ -3,13 +3,12 @@ package com.example.FileManagementAndStorage.Security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class WebSecurityConfig {
@@ -22,9 +21,9 @@ public class WebSecurityConfig {
                 header.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests((requests) ->
                 requests.requestMatchers("/h2-console/**",
-                                "/api/auth/**").permitAll()
+                                "/api/auth/**","/api/files/**","/api/folders/**").permitAll()
                 .anyRequest().authenticated());
-        http.csrf(csrf -> csrf.disable());
+        http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
