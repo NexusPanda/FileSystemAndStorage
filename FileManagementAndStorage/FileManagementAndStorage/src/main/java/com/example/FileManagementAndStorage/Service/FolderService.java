@@ -3,7 +3,7 @@ package com.example.FileManagementAndStorage.Service;
 import com.example.FileManagementAndStorage.ModelDTO.FolderDTO;
 
 public interface FolderService {
-    FolderDTO createFolder(String name, Long parentId);
+    FolderDTO createFolder(String name, Long id, String username);
 
     FolderDTO getFolder(Long id);
 

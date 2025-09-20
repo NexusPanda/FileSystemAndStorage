@@ -1,12 +1,15 @@
 package com.example.FileManagementAndStorage.Service;
 
 import com.example.FileManagementAndStorage.Model.Folder;
+import com.example.FileManagementAndStorage.Model.UserEntity;
 import com.example.FileManagementAndStorage.ModelDTO.FolderDTO;
-import com.example.FileManagementAndStorage.Repository.FileRepository;
 import com.example.FileManagementAndStorage.Repository.FolderRepository;
+import com.example.FileManagementAndStorage.Repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class FolderServiceImpl implements FolderService {
@@ -15,12 +18,21 @@ public class FolderServiceImpl implements FolderService {
     private FolderRepository folderRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
-    public FolderDTO createFolder(String name, Long parentId) {
+    public FolderDTO createFolder(String name, Long parentId, String username) {
+
+        UserEntity owner = (UserEntity) userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         Folder folder = new Folder();
         folder.setFolderName(name);
+        folder.setOwner(owner);
+        folder.setCreatedAt(LocalDateTime.now());
 
         if (parentId != null) {
             Folder parent = folderRepository.findById(parentId)
@@ -28,8 +40,8 @@ public class FolderServiceImpl implements FolderService {
             folder.setParentFolder(parent);
         }
 
-        Folder savedFolder = folderRepository.save(folder);
-        return modelMapper.map(savedFolder, FolderDTO.class);
+        Folder saved = folderRepository.save(folder);
+        return modelMapper.map(saved, FolderDTO.class);
     }
 
     @Override
