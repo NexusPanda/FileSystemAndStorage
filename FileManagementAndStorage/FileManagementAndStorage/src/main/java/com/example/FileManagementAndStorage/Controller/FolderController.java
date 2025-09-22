@@ -37,8 +37,8 @@ public class FolderController {
 
     @PatchMapping("/{id}/rename")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<FolderDTO> renameFolder(@PathVariable Long id, @RequestBody String newName) {
-        return ResponseEntity.ok(folderService.renameFolder(id, newName));
+    public ResponseEntity<FolderDTO> renameFolder(@PathVariable Long id, @RequestBody String folderName) {
+        return ResponseEntity.ok(folderService.renameFolder(id, folderName));
     }
 
     @DeleteMapping("/{id}")

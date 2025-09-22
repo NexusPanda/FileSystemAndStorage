@@ -1,5 +1,6 @@
 package com.example.FileManagementAndStorage.Service;
 
+import com.example.FileManagementAndStorage.Exception.ResourceNotFoundException;
 import com.example.FileManagementAndStorage.Model.Folder;
 import com.example.FileManagementAndStorage.Model.UserEntity;
 import com.example.FileManagementAndStorage.ModelDTO.FolderDTO;
@@ -26,9 +27,9 @@ public class FolderServiceImpl implements FolderService {
     @Override
     public FolderDTO createFolder(String name, Long parentId, String username) {
 
-        System.out.println("Name from Principle = " + username);
+//        System.out.println("Name from Principle = " + username);
         UserEntity owner = (UserEntity) userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User","Username","User"));
 
         Folder folder = new Folder();
         folder.setFolderName(name);
@@ -48,15 +49,15 @@ public class FolderServiceImpl implements FolderService {
     @Override
     public FolderDTO getFolder(Long id) {
         Folder folder = folderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Folder not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Folder id","Folder",id));
         return modelMapper.map(folder, FolderDTO.class);
     }
 
     @Override
-    public FolderDTO renameFolder(Long id, String newName) {
+    public FolderDTO renameFolder(Long id, String folderName) {
         Folder folder = folderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Folder not found"));
-        folder.setFolderName(newName);
+                .orElseThrow(() -> new ResourceNotFoundException("Folder id","Folder",id));
+        folder.setFolderName(folderName);
         Folder updated = folderRepository.save(folder);
         return modelMapper.map(updated, FolderDTO.class);
     }
@@ -64,7 +65,7 @@ public class FolderServiceImpl implements FolderService {
     @Override
     public void deleteFolder(Long id) {
         Folder folder = folderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Folder not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Folder id","Folder",id));
         folderRepository.delete(folder);
     }
 }

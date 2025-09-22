@@ -7,7 +7,7 @@ public interface FolderService {
 
     FolderDTO getFolder(Long id);
 
-    FolderDTO renameFolder(Long id, String newName);
+    FolderDTO renameFolder(Long id, String folderName);
 
     void deleteFolder(Long id);
 }
