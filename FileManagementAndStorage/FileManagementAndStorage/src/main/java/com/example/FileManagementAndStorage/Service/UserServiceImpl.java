@@ -46,8 +46,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-        UserEntity user = (UserEntity) userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + loginRequest.getEmail()));
+        UserEntity user = (UserEntity) userRepository.findByUsername(loginRequest.getName())
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + loginRequest.getName()));
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password!");
         }

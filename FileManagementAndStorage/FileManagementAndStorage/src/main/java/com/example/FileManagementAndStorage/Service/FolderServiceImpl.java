@@ -26,6 +26,7 @@ public class FolderServiceImpl implements FolderService {
     @Override
     public FolderDTO createFolder(String name, Long parentId, String username) {
 
+        System.out.println("Name from Principle = " + username);
         UserEntity owner = (UserEntity) userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

@@ -20,6 +20,7 @@ public class FolderController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<FolderDTO> createFolder(@RequestBody FolderDTO folderDTO, Principal principal) {
         // principal.getName() ensures the username comes from JWT
+        System.out.println("Principle = " + principal.toString());
         FolderDTO createdFolder = folderService.createFolder(
                 folderDTO.getFolderName(),
                 folderDTO.getParentId(),
@@ -36,7 +37,7 @@ public class FolderController {
 
     @PatchMapping("/{id}/rename")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<FolderDTO> renameFolder(@PathVariable Long id, @RequestParam String newName) {
+    public ResponseEntity<FolderDTO> renameFolder(@PathVariable Long id, @RequestBody String newName) {
         return ResponseEntity.ok(folderService.renameFolder(id, newName));
     }
 
