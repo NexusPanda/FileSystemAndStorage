@@ -1,6 +1,7 @@
 package com.example.FileManagementAndStorage.Controller;
 
 import com.example.FileManagementAndStorage.ModelDTO.FolderDTO;
+import com.example.FileManagementAndStorage.Security.Request.UpdateFolderNameRequest;
 import com.example.FileManagementAndStorage.Service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,8 @@ public class FolderController {
 
     @PatchMapping("/{id}/rename")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<FolderDTO> renameFolder(@PathVariable Long id, @RequestBody String folderName) {
-        return ResponseEntity.ok(folderService.renameFolder(id, folderName));
+    public ResponseEntity<FolderDTO> renameFolder(@PathVariable Long id, @RequestBody UpdateFolderNameRequest request) {
+        return ResponseEntity.ok(folderService.renameFolder(id, request.getFolderName()));
     }
 
     @DeleteMapping("/{id}")
