@@ -5,9 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
-    FileDTO uploadFile(MultipartFile multipartFile, Long folderId);
+    FileDTO uploadFile(MultipartFile multipartFile, Long folderId, String username);
 
-    ResponseEntity<?> downloadFile(Long id);
+//    ResponseEntity<?> downloadFile(Long id);
 
     void softDelete(Long id);
 
