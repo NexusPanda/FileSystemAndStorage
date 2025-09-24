@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -71,20 +74,23 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-//    @Override
-//    public ResponseEntity<byte[]> downloadFile(Long id) {
-//        FileModel file = fileRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("File not found"));
-//
-//        if (file.isDeleted()) {
-//            throw new RuntimeException("File is in trash");
-//        }
-//
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
-//                .header(HttpHeaders.CONTENT_TYPE, file.getContentType())
-//                .body(file.getData());
-//    }
+    @Override
+    public ResponseEntity<byte[]> downloadFile(Long id) {
+        FileModel file = fileRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("File not found"));
+        try {
+            Path path = Paths.get(file.getPath());
+            byte[] data = Files.readAllBytes(path);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + file.getFileName() + "\"")
+                    .header(HttpHeaders.CONTENT_TYPE, file.getType())
+                    .body(data);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading file", e);
+        }
+    }
 
     @Override
     public void softDelete(Long id) {

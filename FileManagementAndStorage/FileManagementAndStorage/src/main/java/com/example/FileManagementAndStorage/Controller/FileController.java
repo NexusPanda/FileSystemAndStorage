@@ -25,10 +25,10 @@ public class FileController {
         return ResponseEntity.ok(fileService.uploadFile(multipartFile, folderId, username));
     }
 
-//    @GetMapping("/{id}/download")
-//    public ResponseEntity<byte[]> getFile(@PathVariable Long id) {
-//        return fileService.downloadFile(id);
-//    }
+    @GetMapping("/{id}/download")
+    public ResponseEntity<byte[]> getFile(@PathVariable Long id) {
+        return fileService.downloadFile(id);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> softDelete(@PathVariable Long id) {
