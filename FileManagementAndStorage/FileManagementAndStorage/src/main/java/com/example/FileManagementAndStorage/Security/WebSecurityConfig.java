@@ -1,5 +1,6 @@
 package com.example.FileManagementAndStorage.Security;
 
+import com.example.FileManagementAndStorage.Config.Role;
 import com.example.FileManagementAndStorage.Security.Jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,8 +28,9 @@ public class WebSecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.headers(header ->
                 header.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
-        http.authorizeHttpRequests((requests) ->
-                requests.requestMatchers("/h2-console/**", "/api/auth/**").permitAll()
+        http.authorizeHttpRequests((requests) ->requests
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/h2-console/**", "/api/auth/**").permitAll()
                         .requestMatchers("/api/folders/**", "/api/files/**").authenticated()
                         .anyRequest().authenticated()
         );
