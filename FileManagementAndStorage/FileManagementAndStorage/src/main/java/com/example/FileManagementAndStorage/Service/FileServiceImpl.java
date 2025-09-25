@@ -1,5 +1,6 @@
 package com.example.FileManagementAndStorage.Service;
 
+import com.example.FileManagementAndStorage.Exception.ResourceNotFoundException;
 import com.example.FileManagementAndStorage.Model.FileModel;
 import com.example.FileManagementAndStorage.Model.Folder;
 import com.example.FileManagementAndStorage.Model.UserEntity;
@@ -38,12 +39,12 @@ public class FileServiceImpl implements FileService {
     public FileDTO uploadFile(MultipartFile multipartFile, Long folderId, String username) {
         try {
             UserEntity owner = (UserEntity) userRepository.findByUsername(username)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("User","Username",username));
 
             Folder folder = null;
             if (folderId != null) {
                 folder = folderRepository.findById(folderId)
-                        .orElseThrow(() -> new RuntimeException("Folder not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Folder","Folder_Id",folderId));
             }
 
             // Define storage path (example: uploads/<username>/<filename>)
@@ -70,14 +71,14 @@ public class FileServiceImpl implements FileService {
             return modelMapper.map(saved, FileDTO.class);
 
         } catch (IOException e) {
-            throw new RuntimeException("Error storing file", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public ResponseEntity<byte[]> downloadFile(Long id) {
         FileModel file = fileRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("File not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("File","File_Id",id));
         try {
             Path path = Paths.get(file.getPath());
             byte[] data = Files.readAllBytes(path);
@@ -95,7 +96,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public void softDelete(Long id) {
         FileModel file = fileRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("File not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("File","File_Id",id));
         file.setDeleted(true);
         fileRepository.save(file);
     }
@@ -103,7 +104,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public void restoreFile(Long id) {
         FileModel file = fileRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("File not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("File","File_Id",id));
         file.setDeleted(false);
         fileRepository.save(file);
     }
@@ -111,7 +112,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public void permanentDelete(Long id) {
         FileModel file = fileRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("File not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("File","File_Id",id));
         fileRepository.delete(file);
     }
 }

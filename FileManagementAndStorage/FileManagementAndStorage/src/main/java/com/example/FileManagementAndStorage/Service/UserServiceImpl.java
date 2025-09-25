@@ -1,5 +1,6 @@
 package com.example.FileManagementAndStorage.Service;
 
+import com.example.FileManagementAndStorage.Exception.ResourceNotFoundException;
 import com.example.FileManagementAndStorage.Model.UserEntity;
 import com.example.FileManagementAndStorage.ModelDTO.UserDTO;
 import com.example.FileManagementAndStorage.Repository.UserRepository;
@@ -9,7 +10,6 @@ import com.example.FileManagementAndStorage.Security.Request.SignUpRequest;
 import com.example.FileManagementAndStorage.Security.Response.LoginResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDTO register(SignUpRequest signup) {
         if (userRepository.findByUsername(signup.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already taken!");
+            throw new RuntimeException("User already exists!");
         }
         if (userRepository.findByEmail(signup.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered!");
@@ -47,11 +47,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
         UserEntity user = (UserEntity) userRepository.findByUsername(loginRequest.getName())
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + loginRequest.getName()));
+                .orElseThrow(() -> new ResourceNotFoundException("User","Username",loginRequest.getName()));
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password!");
         }
-        String jwtToken = jwtUtils.getTokenFromUserName((UserDetails) user);
+        String jwtToken = jwtUtils.getTokenFromUserName(user);
         return LoginResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())

@@ -29,7 +29,7 @@ public class FolderServiceImpl implements FolderService {
 
 //        System.out.println("Name from Principle = " + username);
         UserEntity owner = (UserEntity) userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User","Username","User"));
+                .orElseThrow(() -> new ResourceNotFoundException("User","Username",username));
 
         Folder folder = new Folder();
         folder.setFolderName(name);
@@ -38,7 +38,7 @@ public class FolderServiceImpl implements FolderService {
 
         if (parentId != null) {
             Folder parent = folderRepository.findById(parentId)
-                    .orElseThrow(() -> new RuntimeException("Parent folder not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent Folder","Folder_Id",parentId));
             folder.setParentFolder(parent);
         }
 
@@ -49,14 +49,14 @@ public class FolderServiceImpl implements FolderService {
     @Override
     public FolderDTO getFolder(Long id) {
         Folder folder = folderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Folder id","Folder",id));
+                .orElseThrow(() -> new ResourceNotFoundException("Folder","Folder_Id",id));
         return modelMapper.map(folder, FolderDTO.class);
     }
 
     @Override
     public FolderDTO renameFolder(Long id, String folderName) {
         Folder folder = folderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Folder id","Folder",id));
+                .orElseThrow(() -> new ResourceNotFoundException("Folder","Folder_Id",id));
         folder.setFolderName(folderName);
         Folder updated = folderRepository.save(folder);
         return modelMapper.map(updated, FolderDTO.class);
@@ -65,7 +65,7 @@ public class FolderServiceImpl implements FolderService {
     @Override
     public void deleteFolder(Long id) {
         Folder folder = folderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Folder id","Folder",id));
+                .orElseThrow(() -> new ResourceNotFoundException("Folder","Folder_Id",id));
         folderRepository.delete(folder);
     }
 }
