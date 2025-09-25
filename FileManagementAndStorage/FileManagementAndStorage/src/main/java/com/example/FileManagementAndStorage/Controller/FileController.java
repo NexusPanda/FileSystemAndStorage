@@ -1,6 +1,5 @@
 package com.example.FileManagementAndStorage.Controller;
 
-import com.example.FileManagementAndStorage.ModelDTO.FileDTO;
 import com.example.FileManagementAndStorage.Service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
