@@ -30,7 +30,7 @@ public class AdminController {
         return ResponseEntity.ok("User deleted successfully");
     }
 
-    @PreAuthorize("hasRole  ('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/files")
     public ResponseEntity<List<FileDTO>> getAllFiles() {
         return ResponseEntity.ok(adminService.getAllFiles());
