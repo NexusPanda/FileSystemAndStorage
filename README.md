@@ -1,6 +1,6 @@
 # 📂 File Management & Storage API
 
-A **Spring Boot backend project** that provides a file storage and management system (like Google Drive clone).
+A **Spring Boot backend project** that provides a file storage and management system (like a Google Drive clone).
 This system supports uploading, downloading, organizing files/folders, user authentication, sharing files, and admin management.
 
 ---
@@ -10,7 +10,7 @@ This system supports uploading, downloading, organizing files/folders, user auth
 ✅ **User Authentication & Authorization**
 
 * User registration & login
-* Role-based access control (e.g., `USER`, `ADMIN`)
+* Role-based access control (`USER`, `ADMIN`)
 
 ✅ **Folder Management**
 
@@ -75,9 +75,9 @@ This system supports uploading, downloading, organizing files/folders, user auth
 * **Spring Boot 3**
 * **Spring Security (JWT)**
 * **Spring Data JPA (Hibernate)**
-* **PostgreSQL** (Database)
+* **PostgreSQL**
 * **ModelMapper** (Entity ↔ DTO mapping)
-* **AWS SDK** (S3 integration – upcoming)
+* **AWS SDK** (for S3 integration – upcoming)
 
 ---
 
@@ -131,9 +131,18 @@ git clone https://github.com/your-username/file-management-storage.git
 cd file-management-storage
 ```
 
-### 2️⃣ Configure Database (PostgreSQL)
+### 2️⃣ Database Configuration (PostgreSQL)
 
-Update `application.properties`:
+In your project, you’ll find a **`application.example.properties`** file.
+
+This file contains **example configurations** for local setup.
+Copy it as a new file named `application.properties`:
+
+```bash
+cp src/main/resources/application.example.properties src/main/resources/application.properties
+```
+
+Then update it with your **own credentials** (like DB username, password, AWS keys, etc.).
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/file_db
@@ -141,6 +150,14 @@ spring.datasource.username=postgres
 spring.datasource.password=yourpassword
 spring.jpa.hibernate.ddl-auto=update
 ```
+
+> ⚠️ **Important Security Note:**
+>
+> * Never commit your real credentials (database password, AWS keys, etc.) to GitHub.
+> * Always keep secrets in `application.properties`, which should be added to your `.gitignore`.
+> * Use `application.example.properties` only as a **template** to show others how to set up safely.
+
+---
 
 ### 3️⃣ Run the Application
 
@@ -151,7 +168,7 @@ mvn spring-boot:run
 ### 4️⃣ Test APIs in Postman
 
 * Base URL: `http://localhost:8080/api`
-* Import the Postman collection (to be added)
+* Import the Postman collection (to be added soon)
 
 ---
 
@@ -160,7 +177,7 @@ mvn spring-boot:run
 * Create an **S3 bucket**
 * Configure AWS credentials in `application.properties`
 * Add AWS SDK integration in `FileService`
-* Replace local file storage with S3 storage
+* Replace local file storage with S3
 
 ---
 
