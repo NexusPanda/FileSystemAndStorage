@@ -9,6 +9,8 @@ import com.example.FileManagementAndStorage.Repository.FileRepository;
 import com.example.FileManagementAndStorage.Repository.FolderRepository;
 import com.example.FileManagementAndStorage.Repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +42,8 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private S3Client s3Client;
+
+    private static final Logger log = LoggerFactory.getLogger(FileServiceImpl.class);
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -133,12 +137,22 @@ public class FileServiceImpl implements FileService {
         FileModel file = fileRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("File", "File_Id", id));
 
-        // Delete from S3
-        s3Client.deleteObject(DeleteObjectRequest.builder()
-                .bucket(bucket)
-                .key(file.getPath())
-                .build());
+        String key = file.getPath(); // assuming it stores the full S3 key
 
-        fileRepository.delete(file);
+        try {
+            DeleteObjectResponse response = s3Client.deleteObject(DeleteObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .build());
+
+            log.info("File deleted from S3 successfully: {}, version: {}", key, response.versionId());
+
+            fileRepository.delete(file);
+            log.info("File record deleted from database: {}", id);
+        } catch (Exception e) {
+            log.error("Failed to delete file from S3 for key: {}", key, e);
+            throw new RuntimeException("Error deleting file from S3", e);
+        }
     }
+
 }
