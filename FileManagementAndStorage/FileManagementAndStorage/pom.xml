@@ -116,8 +116,15 @@
             <version>2.25.20</version> <!-- choose latest stable -->
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>software.amazon.awssdk</groupId>-->
+<!--            <artifactId>s3-presigner</artifactId>-->
+<!--            <version>2.25.20</version>-->
+<!--        </dependency>-->
+
     </dependencies>
 	<build>
+        <finalName>filesystem-storage</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
