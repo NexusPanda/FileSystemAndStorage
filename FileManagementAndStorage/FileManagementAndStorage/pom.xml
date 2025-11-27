@@ -122,6 +122,11 @@
 <!--            <version>2.25.20</version>-->
 <!--        </dependency>-->
 
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
     </dependencies>
 	<build>
         <finalName>filesystem-storage</finalName>
