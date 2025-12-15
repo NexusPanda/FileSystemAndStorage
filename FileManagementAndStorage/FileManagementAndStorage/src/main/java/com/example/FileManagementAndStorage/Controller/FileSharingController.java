@@ -32,7 +32,7 @@ public class FileSharingController {
         return ResponseEntity.ok("File sharing revoked for user " + userId);
     }
 
-    @GetMapping("/{id}/download")
+    @GetMapping("/{id}/downloadpre-signedurl")
     public ResponseEntity<String> downloadSharedFile(
             @PathVariable Long id,
             @RequestParam Long userId) {
