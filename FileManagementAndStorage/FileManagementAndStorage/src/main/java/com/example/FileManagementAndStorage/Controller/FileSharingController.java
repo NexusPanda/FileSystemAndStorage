@@ -31,4 +31,14 @@ public class FileSharingController {
         sharingService.revokeShare(id, userId);
         return ResponseEntity.ok("File sharing revoked for user " + userId);
     }
+
+    @GetMapping("/{id}/download")
+    public ResponseEntity<String> downloadSharedFile(
+            @PathVariable Long id,
+            @RequestParam Long userId) {
+
+        String url = sharingService.getDownloadUrl(id, userId);
+        return ResponseEntity.ok(url);
+    }
+
 }

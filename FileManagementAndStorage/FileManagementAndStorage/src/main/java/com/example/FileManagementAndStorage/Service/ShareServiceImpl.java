@@ -30,6 +30,9 @@ public class ShareServiceImpl implements ShareService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private StorageService storageService;
+
     @Override
     public void shareFile(Long fileId, Long userId) {
         FileModel file = fileRepository.findById(fileId)
@@ -70,4 +73,20 @@ public class ShareServiceImpl implements ShareService {
         fileShareRepository.delete(share);
     }
 
+
+    @Override
+    public String getDownloadUrl(Long fileId, Long userId) {
+
+        // 1. Check share permission
+        FileShare share = fileShareRepository
+                .findByFileIdAndSharedWithId(fileId, userId)
+                .orElseThrow(() -> new RuntimeException("Access denied"));
+
+        // 2. Get file object key (stored in DB)
+        FileModel file = share.getFile();
+        String objectKey = file.getPath(); // ex: uploads/abc.pdf
+
+        // 3. Generate Pre-Signed URL
+        return storageService.generateDownloadUrl(objectKey);
+    }
 }

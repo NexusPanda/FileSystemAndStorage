@@ -12,4 +12,7 @@ public interface ShareService {
 
     void revokeShare(Long fileId, Long userId);
 
+    String getDownloadUrl(Long fileId, Long userId);
+
+
 }
